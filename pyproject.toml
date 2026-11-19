@@ -4,8 +4,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "eval.forge"
-version = "0.1.0"
-description = "A small evaluation harness: scorers, suites, crash-safe runs, and a regression gate for model and prompt changes. Dependency-free Python."
+version = "0.2.0"
+description = "An evaluation harness that knows how much a number can be trusted: intervals, a non-inferiority gate that says inconclusive when the suite is too small, slices, repeats, leakage checks, and judge calibration. Dependency-free Python."
+classifiers = ["Typing :: Typed", "Programming Language :: Python :: 3", "License :: OSI Approved :: MIT License"]
+keywords = ["llm", "evaluation", "evals", "regression", "statistics", "benchmark"]
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
@@ -13,3 +15,21 @@ authors = [{ name = "AndMaverick LLC" }]
 
 [tool.setuptools.packages.find]
 include = ["eval_forge*"]
+
+[tool.setuptools.package-data]
+eval_forge = ["py.typed"]
+
+[project.scripts]
+eval-forge = "eval_forge.cli:main"
+
+[tool.ruff]
+line-length = 130
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "C4", "SIM"]
+ignore = ["E501"]
+
+[tool.mypy]
+strict = true
+files = ["eval_forge"]
