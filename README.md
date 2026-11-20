@@ -2,7 +2,7 @@
 
 An evaluation harness that knows how much a number can be trusted.
 
-Most eval setups end in a single score and a hopeful comparison: v2 got 0.83, v1 got 0.85, ship it or don't. With 40 cases that difference is noise, and with 4,000 it may be real, and the harness never tells you which. eval.forge reports an interval on every score, gates changes with a non-inferiority test that can answer **pass**, **fail** or **inconclusive** (and says how many more cases would settle it), refuses to compare runs from different test sets, and checks your grader and your dataset for the two classic ways evals lie. Standard library only.
+Most eval setups end in a single score and a hopeful comparison: v2 got 0.83, v1 got 0.85, ship it or don't. With 40 cases that difference is noise, and with 4,000 it may be real, and the harness never tells you which. eval.forge reports an interval on every score, gates changes with a noninferiority test that can answer **pass**, **fail** or **inconclusive** (and says how many more cases would settle it), refuses to compare runs from different test sets, and checks your grader and your dataset for the two classic ways evals lie. Standard library only.
 
 ```
 pip install git+https://github.com/AndMaverick/eval.forge
@@ -27,15 +27,15 @@ print(result.cases_needed)   # when inconclusive: roughly how many paired cases 
 ```
 
 - **Intervals, not bare means.** Wilson interval for pass/fail scores, bootstrap otherwise. `report.interval("exact")`.
-- **Non-inferiority gate.** "Is the candidate no worse than the baseline by more than the margin?" is tested on the paired per-case differences. *Pass* means shown within the margin, *fail* means shown worse, *inconclusive* means the data cannot tell. A small suite never blocks a release by luck, and with `strict` it never lets one through by luck.
+- **Noninferiority gate.** "Is the candidate no worse than the baseline by more than the margin?" is tested on the paired differences per case. *Pass* means shown within the margin, *fail* means shown worse, *inconclusive* means the data cannot tell. A small suite never blocks a release by luck, and with `strict` it never lets one through by luck.
 - **McNemar for pass/fail, permutation test otherwise**, with the regressed and improved case ids listed.
 - **Slices.** Tag cases (`arabic`, `long`, `refund`) and `report.by_tag("exact")` shows the worst slice first, with its case count, so an average that hides a collapse in one segment does not.
 - **Same suite or no comparison.** Every report carries a digest of the cases and scorer names. Comparing runs from different suites raises instead of returning a number.
-- **Crash safe, repeatable.** A crash or a scorer error scores zero, is recorded, and the run continues. `retries` re-calls after a crash. `repeats` averages a non-deterministic system and lists the flaky cases. `workers` runs concurrently with results in case order.
+- **Crash safe, repeatable.** A crash or a scorer error scores zero, is recorded, and the run continues. `retries` calls again after a crash. `repeats` averages a nondeterministic system and lists the flaky cases. `workers` runs concurrently with results in case order.
 - **Cost and tokens.** Return `Result(output, cost, tokens)` from the system under test and the report carries them.
 - **Scorers.** `exact`, `exact_normalized`, `contains`, `not_contains`, `regex`, `numeric_close`, `f1_tokens`, `jaccard`, `edit_similarity`, `json_valid`, `json_fields`, `json_equal`, and `all_of` / `any_of` / `weighted` to combine them. A scorer is any function of (case, output) returning 0 to 1.
-- **Model grading you can audit.** `rubric(judge, criteria)` turns any text-to-text function into a scorer, and a reply with no usable rating is an error rather than a silent grade. `agreement(judge_scores, human_scores)` measures the grader against human labels (accuracy, kappa, Spearman, bias, false passes) before you let it gate anything.
-- **Dataset hygiene.** `split` is stable under hashing, so a held-out set stays held out as the dataset grows. `dedupe` drops repeated inputs. `overlap` finds evaluation cases that appear in a corpus (training data, few-shot examples, a prompt), because a leaked case overstates ability.
+- **Model grading you can audit.** `rubric(judge, criteria)` turns any text in, text out function into a scorer, and a reply with no usable rating is an error rather than a silent grade. `agreement(judge_scores, human_scores)` measures the grader against human labels (accuracy, kappa, Spearman, bias, false passes) before you let it gate anything.
+- **Dataset hygiene.** `split` is stable under hashing, so a held out set stays held out as the dataset grows. `dedupe` drops repeated inputs. `overlap` finds evaluation cases that appear in a corpus (training data, few shot examples, a prompt), because a leaked case overstates ability.
 
 ## Command line
 
@@ -58,10 +58,10 @@ verdict: fail  (gate fails)
 
 ## Honest limits
 
-- A non-inferiority test answers a narrow question about the cases you have. It cannot tell you the suite is representative of production traffic. Slices help, but choosing the cases is still on you.
+- A noninferiority test answers a narrow question about the cases you have. It cannot tell you the suite is representative of production traffic. Slices help, but choosing the cases is still on you.
 - The bootstrap bound assumes the cases are a fair sample. Very small suites (under about 20 cases) give wide, unstable bounds, which is what *inconclusive* is for.
-- Model-graded scores inherit the grader's bias. Run `agreement` against human labels first. A kappa under about 0.6 means the grader and people often disagree.
-- `overlap` finds shared word n-grams, so it catches verbatim leakage and not paraphrase.
+- Model graded scores inherit the grader's bias. Run `agreement` against human labels first. A kappa under about 0.6 means the grader and people often disagree.
+- `overlap` finds shared word n grams, so it catches verbatim leakage and not paraphrase.
 - It does not call any model. You supply the system under test and, if you use one, the judge.
 
 ## Pairs with
@@ -74,7 +74,7 @@ verdict: fail  (gate fails)
 python -m unittest discover -s tests -t . -v
 ```
 
-62 tests, with the statistics checked against hand-worked values. Ruff and mypy strict run in CI on Python 3.10 to 3.13.
+62 tests, with the statistics checked against worked by hand values. Ruff and mypy strict run in CI on Python 3.10 to 3.13.
 
 MIT licensed. Built by [AndMaverick LLC](https://www.andmaverick.com).
 
