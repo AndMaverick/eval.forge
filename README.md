@@ -76,6 +76,8 @@ python -m unittest discover -s tests -t . -v
 
 62 tests, with the statistics checked against worked by hand values. Ruff and mypy strict run in CI on Python 3.10 to 3.13.
 
+**Related repositories:** [mao-framework](https://github.com/AndMaverick/mao-framework) has a smaller module, `mao.assure`, that holds eval suites and a regression gate that names the cases that flipped while the average held. [drift.watch](https://github.com/AndMaverick/drift.watch) asks the same question of production data: is this change real or noise?
+
 MIT licensed. Built by [AndMaverick LLC](https://www.andmaverick.com).
 
 ---
